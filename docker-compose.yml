@@ -1,0 +1,48 @@
+services:
+  pocdb:
+    build:
+      context: ./Docker-files/db
+    image: vprocontainers/vprofiledb
+    container_name: pocdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - pocdbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+
+  poccache01:
+    image: memcached
+    ports:
+      - "11211:11211"
+
+  pocromq01:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  pocapp:
+    build: 
+      context: ./Docker-files/app
+    image: vprocontainers/vprofileapp
+    container_name: pocapp
+    ports:
+      - "8080:8080"
+    volumes:
+      - pocappdata:/usr/local/tomcat/webapps
+    
+  pocweb:
+    build: 
+      context: ./Docker-files/web
+    image: vprocontainers/vprofileweb
+    container_name: pocweb
+    ports:
+      - "80:80"
+
+volumes:
+   pocdata: {}
+   pocappdata: {}
+  
